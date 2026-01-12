@@ -415,7 +415,7 @@ const basicConfig = {
       console.log("onClickPreview", event);
     },
     afterAsyncRender: (md, html) => {
-      // console.log("afterAsyncRender", md, html);
+      localStorage.setItem("cherry-markdown", md);
     },
     urlProcessor(url, srcType) {
       console.log(`url-processor`, url, srcType);
