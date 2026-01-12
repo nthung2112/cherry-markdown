@@ -171,7 +171,7 @@ const basicConfig = {
       "graph",
       "proTable",
       "togglePreview",
-      "customViewMode",
+      // "customViewMode",
       "search",
       "shortcutKey",
     ],
