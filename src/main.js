@@ -51,7 +51,7 @@ async function main() {
     ...defaultConfig,
   });
 
-  window.cherry = new Cherry(config);
+  window.cherryObj = new Cherry(config);
 }
 
 main();
