@@ -185,7 +185,7 @@ const basicConfig = {
       "search",
       "shortcutKey",
     ],
-    toolbarRight: ["export", "wordCount", "|", "switchModel"],
+    toolbarRight: ["export", "|", "switchModel"],
     bubble: [
       "bold",
       "italic",
