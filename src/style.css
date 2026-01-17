@@ -1,0 +1,132 @@
+.cherry-previewer .cherry-desktop-previewer-content {
+  max-width: 1024px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 25px 30px;
+  overflow-y: scroll;
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
+  background-color: var(--previewer-mobile-bg);
+}
+
+/* Mermaid diagram container styling */
+.mermaid-diagram-container {
+  position: relative;
+  padding: 20px;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color, #fff);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Ensure mermaid SVGs inside container are responsive */
+.mermaid-diagram-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Individual control button styling */
+.mermaid-control-btn {
+  /* background: rgba(0, 0, 0, 0.6); */
+  color: var(--base-font-color);
+  background-color: var(--toolbar-bg);
+  border: 1px solid var(--base-border-color);
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+}
+
+.mermaid-control-btn:hover {
+  transform: scale(1.1);
+}
+
+.mermaid-control-btn:active {
+  transform: scale(0.95);
+}
+
+.mermaid-control-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+/* Fullscreen button styling - Regular view (top-right, shows on hover) */
+.mermaid-fullscreen-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  opacity: 0;
+}
+
+.mermaid-diagram-container:hover .mermaid-fullscreen-btn {
+  opacity: 1;
+}
+
+/* Fullscreen controls container - All buttons in top-right */
+.mermaid-fullscreen-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+/* Close button in fullscreen gets a red hover */
+.mermaid-close-btn:hover {
+  background: rgba(255, 0, 0, 0.8) !important;
+}
+
+/* Fullscreen modal styling */
+.mermaid-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--base-previewer-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.mermaid-fullscreen-content {
+  border-radius: 8px;
+  padding: 60px 20px 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mermaid-fullscreen-content svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}

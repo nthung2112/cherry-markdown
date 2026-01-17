@@ -12,6 +12,7 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "cherry-markdown": "^0.10.3"
+    "cherry-markdown": "^0.10.3",
+    "mermaid": "^11.12.2"
   }
 }

@@ -1,9 +1,19 @@
+import { addDiagramTool } from "./diagram";
+
 const customViewMode = Cherry.createMenuHook("ViewMode", {
   iconName: "question",
   onClick: (selection, type) => {
-    // cherryObj.switchModel("previewOnly", true);
-    // cherryObj.switchModel("editOnly", true);
-    cherryObj.switchModel("edit&preview", true);
+    const preview = cherryObj.getPreviewer();
+    const previewerDom = preview.options.previewerDom;
+    preview.isMobilePreview = false;
+    if (!preview.isDesktopPreview) {
+      preview.isDesktopPreview = true;
+      previewerDom.innerHTML = `<div class='cherry-desktop-previewer-content'>${previewerDom.innerHTML}</div>`;
+    } else {
+      const parentToRemove = previewerDom.firstChild;
+      previewerDom.replaceChildren(...parentToRemove.children);
+      preview.isDesktopPreview = false;
+    }
   },
 });
 
@@ -43,21 +53,21 @@ const basicConfig = {
       },
       codeBlock: {
         theme: "twilight",
-        lineNumber: true,
-        expandCode: true,
+        // lineNumber: true,
+        // expandCode: true,
         copyCode: true,
         editCode: true,
         changeLang: true,
-        wrapperRender: (lang, code, html) => {
-          return `<div class="custom-codeblock-wrapper language-${lang}" data-tips="You can customize the outer container of the code block">${html}</div>`;
-        },
-        customRenderer: {
-          // all: {
-          //   render: (src, sign, cherryEngine, lang) => {
-          //     return `<p class="my-render">lang:${lang};code:${src}</p>`;
-          //   },
-          // },
-        },
+        // wrapperRender: (lang, code, html) => {
+        //   return `<div class="custom-codeblock-wrapper language-${lang}" data-tips="You can customize the outer container of the code block">${html}</div>`;
+        // },
+        // customRenderer: {
+        //   mermaid: {
+        //     render: (src, sign, cherryEngine, lang) => {
+        //       return `<pre data-svg="data-diagram-mermaid" class="mermaid diagram-m">\n${src}\n</pre>\n`;
+        //     },
+        //   },
+        // },
       },
       table: {
         enableChart: true,
@@ -171,11 +181,11 @@ const basicConfig = {
       "graph",
       "proTable",
       "togglePreview",
-      // "customViewMode",
+      "customViewMode",
       "search",
       "shortcutKey",
     ],
-    toolbarRight: ["fullScreen", "|", "export", "wordCount", "|", "switchModel"],
+    toolbarRight: ["fullScreen", "|", "export", "wordCount", "|", "codeTheme", "switchModel"],
     bubble: [
       "bold",
       "italic",
@@ -188,7 +198,7 @@ const basicConfig = {
       "size",
       "color",
     ], // array or false
-    sidebar: ["mobilePreview", "copy"],
+    sidebar: ["mobilePreview", "copy", "theme"],
     toc: {
       defaultModel: "full",
     },
@@ -219,6 +229,8 @@ const basicConfig = {
     },
     afterAsyncRender: (md, html) => {
       localStorage.setItem("cherry-markdown", md);
+
+      addDiagramTool(html);
     },
     urlProcessor(url, srcType) {
       console.log(`url-processor`, url, srcType);
@@ -240,6 +252,18 @@ const basicConfig = {
   autoScrollByHashAfterInit: true,
   themeSettings: {
     mainTheme: "default",
+    codeBlockTheme: "default",
+    inlineCodeTheme: "red", // red or black
+    themeList: [
+      { className: "default", label: "Default" }, // 曾用名：light 明亮
+      { className: "dark", label: "Dark" },
+      { className: "gray", label: "Gray" },
+      { className: "abyss", label: "Abyss" },
+      { className: "green", label: "Green" },
+      { className: "red", label: "Red" },
+      { className: "violet", label: "Violet" },
+      { className: "blue", label: "Blue" },
+    ],
   },
 };
 

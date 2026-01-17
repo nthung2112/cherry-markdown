@@ -1,7 +1,20 @@
 import "cherry-markdown/dist/cherry-markdown.css";
-import Cherry from "cherry-markdown/dist/cherry-markdown";
+import Cherry from "cherry-markdown/dist/cherry-markdown.core";
+import CherryMermaidPlugin from "cherry-markdown/dist/addons/cherry-code-block-mermaid-plugin";
+import mermaid from "mermaid";
+
+Cherry.usePlugin(CherryMermaidPlugin, {
+  mermaid, // pass in mermaid object
+  // mermaidAPI: mermaid.mermaidAPI, // Can also be passed in mermaid API
+  // At the same time, you can configure mermaid's behavior here, please refer to the official mermaid document
+  // theme: "neutral",
+  sequence: { useMaxWidth: false, showSequenceNumbers: true },
+  // Note: Mermaid diagrams are automatically wrapped in a .mermaid-diagram-container div
+  // via the afterAsyncRender callback in config.js for better styling control
+});
 
 import defaultMd from "./data.md?raw";
+import "./style.css";
 
 import { basicConfig } from "./config.js";
 
@@ -12,7 +25,6 @@ function isValidHttpUrl(string) {
   } catch (_) {
     return false;
   }
-  // Check if the protocol is either http: or https:
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
