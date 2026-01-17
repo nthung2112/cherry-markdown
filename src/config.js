@@ -1,6 +1,6 @@
 import { addDiagramTool } from "./diagram";
 
-const customViewMode = Cherry.createMenuHook("ViewMode", {
+const customViewDesktop = Cherry.createMenuHook("ViewDesktop", {
   iconName: "question",
   onClick: (selection, type) => {
     const preview = cherryObj.getPreviewer();
@@ -181,11 +181,11 @@ const basicConfig = {
       "graph",
       "proTable",
       "togglePreview",
-      "customViewMode",
+      "customViewDesktop",
       "search",
       "shortcutKey",
     ],
-    toolbarRight: ["fullScreen", "|", "export", "wordCount", "|", "codeTheme", "switchModel"],
+    toolbarRight: ["export", "wordCount", "|", "switchModel"],
     bubble: [
       "bold",
       "italic",
@@ -198,12 +198,12 @@ const basicConfig = {
       "size",
       "color",
     ], // array or false
-    sidebar: ["mobilePreview", "copy", "theme"],
+    sidebar: ["mobilePreview", "copy", "theme", "codeTheme"],
     toc: {
       defaultModel: "full",
     },
     customMenu: {
-      customViewMode,
+      customViewDesktop,
     },
     shortcutKeySettings: {
       isReplace: false,

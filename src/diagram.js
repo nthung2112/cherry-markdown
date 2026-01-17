@@ -157,89 +157,88 @@ function createZoomPanControls(svg, isFullscreen = false) {
 
 export function addDiagramTool() {
   // Wrap mermaid diagrams in a container div for better styling control
-  setTimeout(() => {
-    const cherryPreview = document.querySelector(".cherry-previewer");
-    if (cherryPreview) {
-      // Find all SVG elements that are mermaid outputs
-      const mermaidSvgs = cherryPreview.querySelectorAll('svg[id^="mermaid-"]');
-      mermaidSvgs.forEach((svg) => {
-        // Check if already wrapped
-        if (svg.parentElement.classList.contains("mermaid-diagram-container")) {
-          return;
-        }
-        const wrapper = document.createElement("div");
-        wrapper.className = "mermaid-diagram-container";
-        svg.parentNode.insertBefore(wrapper, svg);
-        wrapper.appendChild(svg);
 
-        // Add fullscreen button in top-right
-        const fullscreenBtn = document.createElement("button");
-        fullscreenBtn.className = "mermaid-fullscreen-btn mermaid-control-btn";
-        fullscreenBtn.innerHTML = `
+  const cherryPreview = document.querySelector(".cherry-previewer");
+  if (cherryPreview) {
+    // Find all SVG elements that are mermaid outputs
+    const mermaidSvgs = cherryPreview.querySelectorAll('svg[id^="mermaid-"]');
+    mermaidSvgs.forEach((svg) => {
+      // Check if already wrapped
+      if (svg.parentElement.classList.contains("mermaid-diagram-container")) {
+        return;
+      }
+      const wrapper = document.createElement("div");
+      wrapper.className = "mermaid-diagram-container";
+      svg.parentNode.insertBefore(wrapper, svg);
+      wrapper.appendChild(svg);
+
+      // Add fullscreen button in top-right
+      const fullscreenBtn = document.createElement("button");
+      fullscreenBtn.className = "mermaid-fullscreen-btn mermaid-control-btn";
+      fullscreenBtn.innerHTML = `
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
                 </svg>
               `;
-        fullscreenBtn.title = "View fullscreen";
+      fullscreenBtn.title = "View fullscreen";
 
-        // Add click handler for fullscreen
-        fullscreenBtn.onclick = (e) => {
-          e.stopPropagation();
-          const modal = document.createElement("div");
-          modal.className = "mermaid-fullscreen-modal";
+      // Add click handler for fullscreen
+      fullscreenBtn.onclick = (e) => {
+        e.stopPropagation();
+        const modal = document.createElement("div");
+        modal.className = "mermaid-fullscreen-modal";
 
-          const modalContent = document.createElement("div");
-          modalContent.className = "mermaid-fullscreen-content";
+        const modalContent = document.createElement("div");
+        modalContent.className = "mermaid-fullscreen-content";
 
-          const svgClone = svg.cloneNode(true);
+        const svgClone = svg.cloneNode(true);
 
-          // Create button container for fullscreen mode (top-right)
-          const buttonContainer = document.createElement("div");
-          buttonContainer.className = "mermaid-fullscreen-controls";
+        // Create button container for fullscreen mode (top-right)
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "mermaid-fullscreen-controls";
 
-          // Add zoom/pan controls and get buttons for fullscreen view
-          const { buttons: zoomButtons, cleanup } = createZoomPanControls(svgClone, true);
+        // Add zoom/pan controls and get buttons for fullscreen view
+        const { buttons: zoomButtons, cleanup } = createZoomPanControls(svgClone, true);
 
-          // Add all zoom buttons to container
-          if (zoomButtons) {
-            zoomButtons.forEach((btn) => buttonContainer.appendChild(btn));
-          }
+        // Add all zoom buttons to container
+        if (zoomButtons) {
+          zoomButtons.forEach((btn) => buttonContainer.appendChild(btn));
+        }
 
-          // Add close button
-          const closeBtn = document.createElement("button");
-          closeBtn.className = "mermaid-control-btn mermaid-close-btn";
-          closeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        // Add close button
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "mermaid-control-btn mermaid-close-btn";
+        closeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>`;
-          closeBtn.title = "Close (ESC)";
+        closeBtn.title = "Close (ESC)";
 
-          buttonContainer.appendChild(closeBtn);
+        buttonContainer.appendChild(closeBtn);
 
-          modalContent.appendChild(buttonContainer);
-          modalContent.appendChild(svgClone);
-          modal.appendChild(modalContent);
-          cherryPreview.appendChild(modal);
+        modalContent.appendChild(buttonContainer);
+        modalContent.appendChild(svgClone);
+        modal.appendChild(modalContent);
+        cherryPreview.appendChild(modal);
 
-          // Close handlers
-          const closeModal = () => {
-            cleanup();
-            modal.remove();
-          };
-          closeBtn.onclick = closeModal;
-          modal.onclick = (e) => {
-            if (e.target === modal) closeModal();
-          };
-          document.addEventListener("keydown", function escHandler(e) {
-            if (e.key === "Escape") {
-              closeModal();
-              document.removeEventListener("keydown", escHandler);
-            }
-          });
+        // Close handlers
+        const closeModal = () => {
+          cleanup();
+          modal.remove();
         };
+        closeBtn.onclick = closeModal;
+        modal.onclick = (e) => {
+          if (e.target === modal) closeModal();
+        };
+        document.addEventListener("keydown", function escHandler(e) {
+          if (e.key === "Escape") {
+            closeModal();
+            document.removeEventListener("keydown", escHandler);
+          }
+        });
+      };
 
-        wrapper.appendChild(fullscreenBtn);
-      });
-    }
-  }, 100);
+      wrapper.appendChild(fullscreenBtn);
+    });
+  }
 }

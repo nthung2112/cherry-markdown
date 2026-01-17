@@ -9,8 +9,6 @@ Cherry.usePlugin(CherryMermaidPlugin, {
   // At the same time, you can configure mermaid's behavior here, please refer to the official mermaid document
   // theme: "neutral",
   sequence: { useMaxWidth: false, showSequenceNumbers: true },
-  // Note: Mermaid diagrams are automatically wrapped in a .mermaid-diagram-container div
-  // via the afterAsyncRender callback in config.js for better styling control
 });
 
 import defaultMd from "./data.md?raw";
@@ -46,6 +44,11 @@ async function main() {
         defaultModel: "previewOnly",
         keepDocumentScrollAfterInit: true,
       },
+      callback: {
+        afterInit: (text, html) => {
+          document.getElementById("markdown").classList.add("cherry-view-only");
+        },
+      },
     };
   }
 
@@ -60,7 +63,14 @@ async function main() {
 
   const config = Object.assign({}, basicConfig, {
     value: markDownValue,
-    ...defaultConfig,
+    editor: {
+      ...basicConfig.editor,
+      ...defaultConfig.editor,
+    },
+    callback: {
+      ...basicConfig.callback,
+      ...defaultConfig.callback,
+    },
   });
 
   window.cherryObj = new Cherry(config);

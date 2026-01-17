@@ -2,11 +2,35 @@
   max-width: 1024px;
   height: 100%;
   margin: 0 auto;
-  padding: 25px 30px;
+  padding: 20px;
   overflow-y: scroll;
   box-shadow: var(--shadow-lg);
   box-sizing: border-box;
   background-color: var(--previewer-mobile-bg);
+}
+
+.cherry-view-only {
+  overflow-y: auto;
+}
+
+.cherry-view-only .cherry-previewer.cherry-preview--full {
+  width: 100%;
+  max-width: 1024px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  overflow-y: initial;
+  border-left: none;
+  min-height: initial;
+  max-height: initial;
+}
+
+.cherry-view-only .cherry {
+  box-shadow: none;
+}
+
+.cherry-view-only .cherry-flex-toc {
+  position: fixed;
 }
 
 /* Mermaid diagram container styling */
