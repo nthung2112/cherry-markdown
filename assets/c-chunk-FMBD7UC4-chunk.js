@@ -1,4 +1,4 @@
-import{_ as e}from"./index-CEi1Rkun.js";var l=e(()=>`
+import{_ as e}from"./index-5_wRNNrf.js";var l=e(()=>`
   /* Font Awesome icon styling - consolidated */
   .label-icon {
     display: inline-block;
