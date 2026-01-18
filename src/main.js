@@ -5,7 +5,7 @@ import mermaid from "mermaid";
 
 Cherry.usePlugin(CherryMermaidPlugin, {
   mermaid, // pass in mermaid object
-  // mermaidAPI: mermaid.mermaidAPI, // Can also be passed in mermaid API
+  mermaidAPI: mermaid.mermaidAPI, // Can also be passed in mermaid API
   // At the same time, you can configure mermaid's behavior here, please refer to the official mermaid document
   // theme: "neutral",
   sequence: { useMaxWidth: false, showSequenceNumbers: true },

@@ -1,5 +1,22 @@
 import { addDiagramTool } from "./diagram";
 
+/*
+{
+  subMenuConfig: Array,
+  onClick: 'function',
+  shortcutKeys: Array,
+  iconName: 'string',
+  icon: [
+    'string',
+    {
+      type: 'string',
+      content: 'string',
+      iconStyle: ['string', 'undefined'],
+      iconClassName: ['string', 'undefined'],
+    },
+  ],
+};
+*/
 const customViewDesktop = Cherry.createMenuHook("ViewDesktop", {
   iconName: "question",
   onClick: (selection, type) => {
@@ -68,9 +85,6 @@ const basicConfig = {
         //     },
         //   },
         // },
-      },
-      table: {
-        enableChart: true,
       },
       fontEmphasis: {
         allowWhitespace: false,
@@ -205,19 +219,6 @@ const basicConfig = {
     },
     customMenu: {
       customViewDesktop,
-    },
-    shortcutKeySettings: {
-      isReplace: false,
-      shortcutKeyMap: {
-        "Alt-Digit1": {
-          hookName: "header",
-          aliasName: "Header",
-        },
-        "Control-Shift-KeyX": {
-          hookName: "bold",
-          aliasName: "Bold",
-        },
-      },
     },
   },
   drawioIframeUrl: "./drawio.html",
