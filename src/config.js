@@ -179,6 +179,7 @@ const basicConfig = {
         ],
       },
       "graph",
+      "drawIo",
       "proTable",
       "togglePreview",
       "customViewDesktop",
@@ -219,6 +220,7 @@ const basicConfig = {
       },
     },
   },
+  drawioIframeUrl: "./drawio.html",
   previewer: {
     floatWhenClosePreviewer: true,
   },
