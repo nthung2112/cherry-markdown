@@ -1,4 +1,4 @@
-import "cherry-markdown/dist/cherry-markdown.css";
+import "cherry-markdown/dist/cherry-markdown.min.css";
 import Cherry from "cherry-markdown/dist/cherry-markdown.core";
 import CherryMermaidPlugin from "cherry-markdown/dist/addons/cherry-code-block-mermaid-plugin";
 import mermaid from "mermaid";

@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^7.2.4"
+    "vite": "^7.3.1"
   },
   "dependencies": {
-    "cherry-markdown": "^0.10.3",
+    "cherry-markdown": "file:./packages/cherry-markdown",
     "mermaid": "^11.12.2"
   }
 }
