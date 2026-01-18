@@ -228,7 +228,7 @@ const basicConfig = {
   keydown: [],
   callback: {
     onClickPreview: (event) => {
-      console.log("onClickPreview", event);
+      // console.log("onClickPreview", event);
     },
     afterAsyncRender: (md, html) => {
       localStorage.setItem("cherry-markdown", md);
@@ -236,7 +236,7 @@ const basicConfig = {
       addDiagramTool(html);
     },
     urlProcessor(url, srcType) {
-      console.log(`url-processor`, url, srcType);
+      // console.log(`url-processor`, url, srcType);
       return url;
     },
   },
@@ -256,7 +256,7 @@ const basicConfig = {
   themeSettings: {
     mainTheme: "default",
     codeBlockTheme: "default",
-    inlineCodeTheme: "red", // red or black
+    inlineCodeTheme: "black", // red or black
     themeList: [
       { className: "default", label: "Default" }, // 曾用名：light 明亮
       { className: "dark", label: "Dark" },
