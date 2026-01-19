@@ -69,7 +69,7 @@ const basicConfig = {
         },
       },
       codeBlock: {
-        theme: "twilight",
+        theme: "one-light",
         // lineNumber: true,
         // expandCode: true,
         copyCode: true,
@@ -254,8 +254,8 @@ const basicConfig = {
   },
   autoScrollByHashAfterInit: true,
   themeSettings: {
-    mainTheme: "default",
-    codeBlockTheme: "default",
+    mainTheme: "gray",
+    codeBlockTheme: "one-light",
     inlineCodeTheme: "black", // red or black
     themeList: [
       { className: "default", label: "Default" }, // 曾用名：light 明亮

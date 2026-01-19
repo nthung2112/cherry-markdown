@@ -1,34 +1,52 @@
-// Helper function to create zoom/pan controls
+// Helper function to create zoom/pan controls using SVG viewBox
+// ViewBox manipulation keeps SVG crisp at any zoom level
 function createZoomPanControls(svg, isFullscreen = false) {
+  // Parse or create viewBox
+  let vb = parseViewBox(svg);
+  const original = { ...vb };
+
+  function parseViewBox(svgEl) {
+    const attr = svgEl.getAttribute("viewBox");
+    if (attr) {
+      const [x, y, w, h] = attr.split(/[\s,]+/).map(Number);
+      return { x, y, width: w, height: h };
+    }
+    // Fallback: create viewBox from SVG dimensions
+    const w = svgEl.width?.baseVal?.value || svgEl.clientWidth || 800;
+    const h = svgEl.height?.baseVal?.value || svgEl.clientHeight || 600;
+    svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    return { x: 0, y: 0, width: w, height: h };
+  }
+
   let scale = 1;
-  let translateX = 0;
-  let translateY = 0;
   let isDragging = false;
   let startX = 0;
   let startY = 0;
+  let startVbX = 0;
+  let startVbY = 0;
 
-  const ZOOM_STEP = 0.2;
+  const ZOOM_FACTOR = 0.1;
   const MIN_SCALE = 0.1;
-  const MAX_SCALE = 5;
+  const MAX_SCALE = 10;
 
-  // Apply transform
-  const applyTransform = () => {
-    svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    svg.style.transformOrigin = "center";
+  // Apply viewBox - this re-renders SVG at new "zoom" level
+  const applyViewBox = () => {
+    const w = original.width / scale;
+    const h = original.height / scale;
+    svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${w} ${h}`);
   };
 
   // Pan functionality with mouse
   svg.style.cursor = "grab";
-  svg.style.willChange = "transform"; // Performance hint for browser
 
   const onMouseDown = (e) => {
     if (e.button === 0) {
-      // Left click only
       isDragging = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
+      startX = e.clientX;
+      startY = e.clientY;
+      startVbX = vb.x;
+      startVbY = vb.y;
       svg.style.cursor = "grabbing";
-      svg.style.transition = "none"; // Disable transition during drag
       e.preventDefault();
     }
   };
@@ -36,15 +54,20 @@ function createZoomPanControls(svg, isFullscreen = false) {
   let rafId = null;
   const onMouseMove = (e) => {
     if (isDragging) {
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
+      // Convert pixel movement to viewBox units
+      const rect = svg.getBoundingClientRect();
+      const vbWidth = original.width / scale;
+      const vbHeight = original.height / scale;
 
-      // Use requestAnimationFrame for smoother updates
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      const dx = ((e.clientX - startX) / rect.width) * vbWidth;
+      const dy = ((e.clientY - startY) / rect.height) * vbHeight;
+
+      vb.x = startVbX - dx;
+      vb.y = startVbY - dy;
+
+      if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        applyTransform();
+        applyViewBox();
         rafId = null;
       });
     }
@@ -54,7 +77,6 @@ function createZoomPanControls(svg, isFullscreen = false) {
     if (isDragging) {
       isDragging = false;
       svg.style.cursor = "grab";
-      svg.style.transition = "transform 0.2s ease"; // Re-enable transition
       if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
@@ -66,15 +88,29 @@ function createZoomPanControls(svg, isFullscreen = false) {
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 
-  // Mouse wheel zoom
+  // Mouse wheel zoom toward cursor
   const onWheel = (e) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
-    const newScale = scale + delta;
+    const zoomIn = e.deltaY < 0;
+    const factor = zoomIn ? (1 + ZOOM_FACTOR) : (1 / (1 + ZOOM_FACTOR));
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * factor));
 
-    if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
+    if (newScale !== scale) {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left) / rect.width;
+      const mouseY = (e.clientY - rect.top) / rect.height;
+
+      const oldW = original.width / scale;
+      const oldH = original.height / scale;
+      const newW = original.width / newScale;
+      const newH = original.height / newScale;
+
+      // Zoom toward mouse cursor
+      vb.x += (oldW - newW) * mouseX;
+      vb.y += (oldH - newH) * mouseY;
+
       scale = newScale;
-      applyTransform();
+      applyViewBox();
     }
   };
 
@@ -92,9 +128,18 @@ function createZoomPanControls(svg, isFullscreen = false) {
     zoomInBtn.title = "Zoom in";
     zoomInBtn.onclick = (e) => {
       e.stopPropagation();
-      if (scale < MAX_SCALE) {
-        scale += ZOOM_STEP;
-        applyTransform();
+      const factor = 1 + ZOOM_FACTOR;
+      const newScale = Math.min(MAX_SCALE, scale * factor);
+      if (newScale !== scale) {
+        // Zoom toward center
+        const oldW = original.width / scale;
+        const oldH = original.height / scale;
+        const newW = original.width / newScale;
+        const newH = original.height / newScale;
+        vb.x += (oldW - newW) / 2;
+        vb.y += (oldH - newH) / 2;
+        scale = newScale;
+        applyViewBox();
       }
     };
 
@@ -107,9 +152,18 @@ function createZoomPanControls(svg, isFullscreen = false) {
     zoomOutBtn.title = "Zoom out";
     zoomOutBtn.onclick = (e) => {
       e.stopPropagation();
-      if (scale > MIN_SCALE) {
-        scale -= ZOOM_STEP;
-        applyTransform();
+      const factor = 1 / (1 + ZOOM_FACTOR);
+      const newScale = Math.max(MIN_SCALE, scale * factor);
+      if (newScale !== scale) {
+        // Zoom toward center
+        const oldW = original.width / scale;
+        const oldH = original.height / scale;
+        const newW = original.width / newScale;
+        const newH = original.height / newScale;
+        vb.x += (oldW - newW) / 2;
+        vb.y += (oldH - newH) / 2;
+        scale = newScale;
+        applyViewBox();
       }
     };
 
@@ -123,13 +177,9 @@ function createZoomPanControls(svg, isFullscreen = false) {
     resetBtn.onclick = (e) => {
       e.stopPropagation();
       scale = 1;
-      translateX = 0;
-      translateY = 0;
-      svg.style.transition = "transform 0.3s ease";
-      applyTransform();
-      setTimeout(() => {
-        svg.style.transition = "transform 0.2s ease";
-      }, 300);
+      vb.x = original.x;
+      vb.y = original.y;
+      applyViewBox();
     };
 
     return {
@@ -192,6 +242,13 @@ export function addDiagramTool() {
         modalContent.className = "mermaid-fullscreen-content";
 
         const svgClone = svg.cloneNode(true);
+
+        // Make SVG fit the fullscreen modal
+        svgClone.style.width = "100%";
+        svgClone.style.height = "100%";
+        svgClone.style.maxWidth = "100vw";
+        svgClone.style.maxHeight = "100vh";
+        svgClone.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
         // Create button container for fullscreen mode (top-right)
         const buttonContainer = document.createElement("div");
